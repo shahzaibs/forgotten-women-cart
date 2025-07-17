@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,6 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { 
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import { 
   Heart, 
   ShoppingCart, 
@@ -76,6 +82,25 @@ const Index = () => {
     }
   ];
 
+  // AI-generated image carousel data
+  const heroImages = [
+    {
+      url: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=1200&h=600&fit=crop',
+      alt: 'Women empowerment community gathering',
+      caption: 'Building stronger communities together'
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1200&h=600&fit=crop',
+      alt: 'Educational support for women',
+      caption: 'Education opens doors to opportunity'
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=1200&h=600&fit=crop',
+      alt: 'Healthcare access for women',
+      caption: 'Healthcare is a fundamental right'
+    }
+  ];
+
   const addToCart = (amount: number) => {
     if (!selectedAppeal) {
       toast({
@@ -121,17 +146,17 @@ const Index = () => {
               <img 
                 src="https://forgottenwomen.org/wp-content/uploads/2023/11/FULL-1.png" 
                 alt="Forgotten Women" 
-                className="h-10 w-auto"
+                className="h-10 w-auto filter brightness-0"
               />
             </div>
             <div className="flex items-center space-x-6">
-              <a href="#about" className="text-gray-700 hover:text-[#93B252] transition-colors">About</a>
-              <a href="#campaigns" className="text-gray-700 hover:text-[#93B252] transition-colors">Campaigns</a>
-              <a href="#involved" className="text-gray-700 hover:text-[#93B252] transition-colors">Get Involved</a>
+              <a href="#about" className="text-gray-700 hover:text-[#93B252] transition-colors font-medium">About</a>
+              <a href="#campaigns" className="text-gray-700 hover:text-[#93B252] transition-colors font-medium">Campaigns</a>
+              <a href="#involved" className="text-gray-700 hover:text-[#93B252] transition-colors font-medium">Get Involved</a>
               <Button
                 variant="outline"
                 size="sm"
-                className="relative border-[#93B252] text-[#93B252] hover:bg-[#93B252] hover:text-white"
+                className="relative border-[#93B252] text-[#93B252] hover:bg-[#93B252] hover:text-white font-medium"
                 onClick={() => setIsCartOpen(true)}
               >
                 <ShoppingCart className="h-4 w-4 mr-2" />
@@ -153,7 +178,7 @@ const Index = () => {
         <div className={`absolute left-0 top-0 h-full w-96 max-w-[90vw] bg-white shadow-xl transform transition-transform duration-300 ${isCartOpen ? 'translate-x-0' : '-translate-x-full'}`}>
           <div className="flex flex-col h-full">
             <div className="flex items-center justify-between p-6 border-b">
-              <h2 className="text-xl font-semibold">Donation Basket</h2>
+              <h2 className="text-xl font-semibold text-gray-900">Donation Basket</h2>
               <Button variant="ghost" size="sm" onClick={() => setIsCartOpen(false)}>
                 <X className="h-4 w-4" />
               </Button>
@@ -171,7 +196,7 @@ const Index = () => {
                   {cartItems.map((item) => (
                     <div key={item.id} className="flex items-center justify-between p-4 border rounded-lg">
                       <div className="flex-1">
-                        <p className="font-medium">{item.appeal}</p>
+                        <p className="font-medium text-gray-900">{item.appeal}</p>
                         <p className="text-[#93B252] font-bold">£{item.amount}</p>
                       </div>
                       <Button 
@@ -191,12 +216,12 @@ const Index = () => {
             {cartItems.length > 0 && (
               <div className="border-t p-6">
                 <div className="flex justify-between items-center mb-4">
-                  <span className="text-lg font-semibold">Total:</span>
+                  <span className="text-lg font-semibold text-gray-900">Total:</span>
                   <span className="text-2xl font-bold text-[#93B252]">£{getTotalAmount()}</span>
                 </div>
                 <div className="space-y-3">
                   <Button 
-                    className="w-full bg-[#93B252] hover:bg-[#7a9642] text-white"
+                    className="w-full bg-[#93B252] hover:bg-[#7a9642] text-white font-medium"
                     onClick={() => {
                       toast({
                         title: "Redirecting to secure checkout",
@@ -208,7 +233,7 @@ const Index = () => {
                   </Button>
                   <Button 
                     variant="outline" 
-                    className="w-full"
+                    className="w-full text-gray-700 border-gray-300 hover:bg-gray-50"
                     onClick={() => setIsCartOpen(false)}
                   >
                     Continue Browsing
@@ -224,10 +249,10 @@ const Index = () => {
       <section className="bg-gradient-to-br from-[#93B252] to-[#7a9642] text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white">
               Safe Aid for Women <br />by Women
             </h1>
-            <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto opacity-90">
+            <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto opacity-90 text-white">
               Supporting forgotten women worldwide through emergency relief, education, 
               and empowerment programs led by women, for women.
             </p>
@@ -235,11 +260,113 @@ const Index = () => {
               <Button size="lg" className="bg-white text-[#93B252] hover:bg-gray-100 font-semibold">
                 Donate Now
               </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-[#93B252]">
+              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-[#93B252] font-semibold">
                 Learn More
               </Button>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Hero Image Carousel */}
+      <section className="py-8 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Carousel className="w-full">
+            <CarouselContent>
+              {heroImages.map((image, index) => (
+                <CarouselItem key={index}>
+                  <div className="relative h-96 rounded-lg overflow-hidden">
+                    <img 
+                      src={image.url} 
+                      alt={image.alt}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-6">
+                      <p className="text-white text-lg font-medium">{image.caption}</p>
+                    </div>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="left-4" />
+            <CarouselNext className="right-4" />
+          </Carousel>
+        </div>
+      </section>
+
+      {/* Quick Donate Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8">
+            <Heart className="h-12 w-12 mx-auto mb-4 text-[#93B252]" />
+            <h2 className="text-3xl font-bold mb-2 text-gray-900">Quick Donate</h2>
+            <p className="text-lg text-gray-600">Choose an amount and appeal to add to your basket</p>
+          </div>
+          
+          <Card className="bg-white text-gray-900 border shadow-lg">
+            <CardContent className="p-8">
+              <div className="space-y-6">
+                {/* Appeal Selection */}
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-gray-700">Select Appeal</label>
+                  <Select value={selectedAppeal} onValueChange={setSelectedAppeal}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Choose which cause to support" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {appeals.map((appeal) => (
+                        <SelectItem key={appeal} value={appeal}>{appeal}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                {/* Preset Amounts */}
+                <div>
+                  <label className="block text-sm font-medium mb-4 text-gray-700">Choose Amount</label>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {presetAmounts.map((amount) => (
+                      <Button
+                        key={amount}
+                        variant="outline"
+                        className="h-16 text-lg font-semibold border-[#93B252] text-[#93B252] hover:bg-[#93B252] hover:text-white"
+                        onClick={() => addToCart(amount)}
+                      >
+                        £{amount}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Custom Amount */}
+                <div className="flex gap-3">
+                  <div className="flex-1">
+                    <Input
+                      type="number"
+                      placeholder="Custom amount"
+                      value={customAmount}
+                      onChange={(e) => setCustomAmount(e.target.value)}
+                      className="h-12"
+                    />
+                  </div>
+                  <Button
+                    className="h-12 bg-[#93B252] hover:bg-[#7a9642] text-white px-8 font-medium"
+                    onClick={() => {
+                      const amount = parseFloat(customAmount);
+                      if (amount > 0) {
+                        addToCart(amount);
+                        setCustomAmount('');
+                      }
+                    }}
+                    disabled={!customAmount || parseFloat(customAmount) <= 0}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add to Basket
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
@@ -343,82 +470,6 @@ const Index = () => {
               </Card>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Quick Donate Section */}
-      <section className="py-20 bg-gradient-to-r from-[#93B252] to-[#7a9642] text-white sticky top-16 z-30">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
-            <Heart className="h-12 w-12 mx-auto mb-4" />
-            <h2 className="text-3xl font-bold mb-2">Quick Donate</h2>
-            <p className="text-lg opacity-90">Choose an amount and appeal to add to your basket</p>
-          </div>
-          
-          <Card className="bg-white text-gray-900">
-            <CardContent className="p-8">
-              <div className="space-y-6">
-                {/* Appeal Selection */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">Select Appeal</label>
-                  <Select value={selectedAppeal} onValueChange={setSelectedAppeal}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Choose which cause to support" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {appeals.map((appeal) => (
-                        <SelectItem key={appeal} value={appeal}>{appeal}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                {/* Preset Amounts */}
-                <div>
-                  <label className="block text-sm font-medium mb-4">Choose Amount</label>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    {presetAmounts.map((amount) => (
-                      <Button
-                        key={amount}
-                        variant="outline"
-                        className="h-16 text-lg font-semibold border-[#93B252] text-[#93B252] hover:bg-[#93B252] hover:text-white"
-                        onClick={() => addToCart(amount)}
-                      >
-                        £{amount}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-                
-                {/* Custom Amount */}
-                <div className="flex gap-3">
-                  <div className="flex-1">
-                    <Input
-                      type="number"
-                      placeholder="Custom amount"
-                      value={customAmount}
-                      onChange={(e) => setCustomAmount(e.target.value)}
-                      className="h-12"
-                    />
-                  </div>
-                  <Button
-                    className="h-12 bg-[#93B252] hover:bg-[#7a9642] text-white px-8"
-                    onClick={() => {
-                      const amount = parseFloat(customAmount);
-                      if (amount > 0) {
-                        addToCart(amount);
-                        setCustomAmount('');
-                      }
-                    }}
-                    disabled={!customAmount || parseFloat(customAmount) <= 0}
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add to Basket
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </section>
 
