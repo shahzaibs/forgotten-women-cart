@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,13 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { 
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 import { 
   Heart, 
   ShoppingCart, 
@@ -32,7 +24,8 @@ import {
   Mail,
   Phone,
   MapPin,
-  Minus
+  Minus,
+  Play
 } from 'lucide-react';
 
 interface DonationItem {
@@ -46,6 +39,7 @@ const Index = () => {
   const [cartItems, setCartItems] = useState<DonationItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedAppeal, setSelectedAppeal] = useState('');
+  const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const [customAmount, setCustomAmount] = useState('');
   const { toast } = useToast();
 
@@ -85,26 +79,9 @@ const Index = () => {
     }
   ];
 
-  // AI-generated image carousel data
-  const heroImages = [
-    {
-      url: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=1200&h=600&fit=crop',
-      alt: 'Women empowerment community gathering',
-      caption: 'Building stronger communities together'
-    },
-    {
-      url: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1200&h=600&fit=crop',
-      alt: 'Educational support for women',
-      caption: 'Education opens doors to opportunity'
-    },
-    {
-      url: 'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=1200&h=600&fit=crop',
-      alt: 'Healthcare access for women',
-      caption: 'Healthcare is a fundamental right'
-    }
-  ];
-
-  const addToCart = (amount: number) => {
+  const addToCart = (amount?: number) => {
+    const finalAmount = amount || parseFloat(customAmount) || selectedAmount;
+    
     if (!selectedAppeal) {
       toast({
         title: "Please select an appeal",
@@ -114,9 +91,18 @@ const Index = () => {
       return;
     }
 
+    if (!finalAmount || finalAmount <= 0) {
+      toast({
+        title: "Please select an amount",
+        description: "Choose a donation amount or enter a custom amount.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     // Check if item already exists in cart
     const existingItemIndex = cartItems.findIndex(
-      item => item.appeal === selectedAppeal && item.amount === amount
+      item => item.appeal === selectedAppeal && item.amount === finalAmount
     );
 
     if (existingItemIndex !== -1) {
@@ -129,15 +115,19 @@ const Index = () => {
       const newItem: DonationItem = {
         id: Date.now().toString(),
         appeal: selectedAppeal,
-        amount: amount,
+        amount: finalAmount,
         quantity: 1
       };
       setCartItems([...cartItems, newItem]);
     }
 
+    // Reset selections
+    setSelectedAmount(null);
+    setCustomAmount('');
+
     toast({
       title: "Added to basket! 💚",
-      description: `£${amount} donation to ${selectedAppeal}`,
+      description: `£${finalAmount} donation to ${selectedAppeal}`,
     });
   };
 
@@ -326,32 +316,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Hero Image Carousel */}
-      <section className="py-8 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Carousel className="w-full">
-            <CarouselContent>
-              {heroImages.map((image, index) => (
-                <CarouselItem key={index}>
-                  <div className="relative h-96 rounded-lg overflow-hidden">
-                    <img 
-                      src={image.url} 
-                      alt={image.alt}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-6">
-                      <p className="text-white text-lg font-medium">{image.caption}</p>
-                    </div>
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="left-4" />
-            <CarouselNext className="right-4" />
-          </Carousel>
-        </div>
-      </section>
-
       {/* Quick Donate Section */}
       <section className="py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -382,13 +346,17 @@ const Index = () => {
                 {/* Preset Amounts */}
                 <div>
                   <label className="block text-sm font-medium mb-4 text-gray-700">Choose Amount</label>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
                     {presetAmounts.map((amount) => (
                       <Button
                         key={amount}
-                        variant="outline"
-                        className="h-16 text-lg font-semibold border-[#93B252] text-[#93B252] hover:bg-[#93B252] hover:text-white"
-                        onClick={() => addToCart(amount)}
+                        variant={selectedAmount === amount ? "default" : "outline"}
+                        className={`h-16 text-lg font-semibold ${
+                          selectedAmount === amount 
+                            ? "bg-[#93B252] text-white hover:bg-[#7a9642]" 
+                            : "border-[#93B252] text-[#93B252] hover:bg-[#93B252] hover:text-white"
+                        }`}
+                        onClick={() => setSelectedAmount(amount)}
                       >
                         £{amount}
                       </Button>
@@ -403,22 +371,23 @@ const Index = () => {
                       type="number"
                       placeholder="Custom amount"
                       value={customAmount}
-                      onChange={(e) => setCustomAmount(e.target.value)}
+                      onChange={(e) => {
+                        setCustomAmount(e.target.value);
+                        setSelectedAmount(null);
+                      }}
                       className="h-12"
                     />
                   </div>
+                </div>
+
+                {/* Add to Basket Button */}
+                <div className="pt-4">
                   <Button
-                    className="h-12 bg-[#93B252] hover:bg-[#7a9642] text-white px-8 font-medium"
-                    onClick={() => {
-                      const amount = parseFloat(customAmount);
-                      if (amount > 0) {
-                        addToCart(amount);
-                        setCustomAmount('');
-                      }
-                    }}
-                    disabled={!customAmount || parseFloat(customAmount) <= 0}
+                    className="w-full h-12 bg-[#93B252] hover:bg-[#7a9642] text-white px-8 font-medium text-lg"
+                    onClick={() => addToCart()}
+                    disabled={!selectedAppeal || (!selectedAmount && !customAmount)}
                   >
-                    <Plus className="h-4 w-4 mr-2" />
+                    <Plus className="h-5 w-5 mr-2" />
                     Add to Basket
                   </Button>
                 </div>
@@ -428,8 +397,47 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Video Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <Play className="h-12 w-12 mx-auto mb-4 text-[#93B252]" />
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Our Impact in Action
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Watch how your donations create real change in the lives of women and girls around the world
+            </p>
+          </div>
+          
+          <div className="max-w-4xl mx-auto">
+            <div className="relative aspect-video bg-gray-900 rounded-lg overflow-hidden shadow-2xl">
+              <div className="absolute inset-0 bg-gradient-to-r from-[#93B252]/20 to-transparent" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Button 
+                  size="lg" 
+                  className="bg-[#93B252] hover:bg-[#7a9642] text-white rounded-full w-20 h-20 p-0"
+                >
+                  <Play className="h-8 w-8 ml-1" />
+                </Button>
+              </div>
+              <img 
+                src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=1200&h=600&fit=crop" 
+                alt="Video thumbnail showing healthcare for women"
+                className="w-full h-full object-cover opacity-80"
+              />
+            </div>
+            <div className="text-center mt-6">
+              <p className="text-gray-600">
+                "Every donation creates a ripple effect of hope and empowerment"
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* About Section */}
-      <section id="about" className="py-20 bg-gray-50">
+      <section id="about" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
