@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -30,13 +31,15 @@ import {
   Linkedin,
   Mail,
   Phone,
-  MapPin
+  MapPin,
+  Minus
 } from 'lucide-react';
 
 interface DonationItem {
   id: string;
   appeal: string;
   amount: number;
+  quantity: number;
 }
 
 const Index = () => {
@@ -111,13 +114,27 @@ const Index = () => {
       return;
     }
 
-    const newItem: DonationItem = {
-      id: Date.now().toString(),
-      appeal: selectedAppeal,
-      amount: amount
-    };
+    // Check if item already exists in cart
+    const existingItemIndex = cartItems.findIndex(
+      item => item.appeal === selectedAppeal && item.amount === amount
+    );
 
-    setCartItems([...cartItems, newItem]);
+    if (existingItemIndex !== -1) {
+      // If item exists, increase quantity
+      const updatedItems = [...cartItems];
+      updatedItems[existingItemIndex].quantity += 1;
+      setCartItems(updatedItems);
+    } else {
+      // If item doesn't exist, add new item
+      const newItem: DonationItem = {
+        id: Date.now().toString(),
+        appeal: selectedAppeal,
+        amount: amount,
+        quantity: 1
+      };
+      setCartItems([...cartItems, newItem]);
+    }
+
     toast({
       title: "Added to basket! 💚",
       description: `£${amount} donation to ${selectedAppeal}`,
@@ -128,12 +145,23 @@ const Index = () => {
     setCartItems(cartItems.filter(item => item.id !== id));
   };
 
+  const updateQuantity = (id: string, newQuantity: number) => {
+    if (newQuantity <= 0) {
+      removeFromCart(id);
+      return;
+    }
+    
+    setCartItems(cartItems.map(item => 
+      item.id === id ? { ...item, quantity: newQuantity } : item
+    ));
+  };
+
   const getTotalAmount = () => {
-    return cartItems.reduce((total, item) => total + item.amount, 0);
+    return cartItems.reduce((total, item) => total + (item.amount * item.quantity), 0);
   };
 
   const getTotalItems = () => {
-    return cartItems.length;
+    return cartItems.reduce((total, item) => total + item.quantity, 0);
   };
 
   return (
@@ -146,7 +174,7 @@ const Index = () => {
               <img 
                 src="https://forgottenwomen.org/wp-content/uploads/2023/11/FULL-1.png" 
                 alt="Forgotten Women" 
-                className="h-10 w-auto filter brightness-0"
+                className="h-10 w-auto"
               />
             </div>
             <div className="flex items-center space-x-6">
@@ -197,7 +225,29 @@ const Index = () => {
                     <div key={item.id} className="flex items-center justify-between p-4 border rounded-lg">
                       <div className="flex-1">
                         <p className="font-medium text-gray-900">{item.appeal}</p>
-                        <p className="text-[#93B252] font-bold">£{item.amount}</p>
+                        <p className="text-[#93B252] font-bold">£{item.amount} each</p>
+                        <div className="flex items-center gap-2 mt-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                            className="h-8 w-8 p-0"
+                          >
+                            <Minus className="h-3 w-3" />
+                          </Button>
+                          <span className="text-sm font-medium px-2">Qty: {item.quantity}</span>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            className="h-8 w-8 p-0"
+                          >
+                            <Plus className="h-3 w-3" />
+                          </Button>
+                        </div>
+                        <p className="text-sm text-gray-600 mt-1">
+                          Subtotal: £{item.amount * item.quantity}
+                        </p>
                       </div>
                       <Button 
                         variant="ghost" 
@@ -245,22 +295,30 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-[#93B252] to-[#7a9642] text-white py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white">
+      {/* Hero Banner with Text Overlay */}
+      <section className="relative h-[600px] bg-gray-900 overflow-hidden">
+        <div className="absolute inset-0">
+          <img 
+            src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=1200&h=600&fit=crop" 
+            alt="Women empowerment community gathering"
+            className="w-full h-full object-cover opacity-70"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30" />
+        </div>
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center">
+          <div className="text-white max-w-2xl">
+            <h1 className="text-4xl md:text-6xl font-bold mb-6">
               Safe Aid for Women <br />by Women
             </h1>
-            <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto opacity-90 text-white">
+            <p className="text-xl md:text-2xl mb-8 opacity-90">
               Supporting forgotten women worldwide through emergency relief, education, 
               and empowerment programs led by women, for women.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-white text-[#93B252] hover:bg-gray-100 font-semibold">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button size="lg" className="bg-[#93B252] hover:bg-[#7a9642] text-white font-semibold">
                 Donate Now
               </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-[#93B252] font-semibold">
+              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-gray-900 font-semibold">
                 Learn More
               </Button>
             </div>
