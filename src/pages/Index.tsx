@@ -51,6 +51,35 @@ const Index = () => {
   const { toast } = useToast();
 
   const presetAmounts = [10, 25, 50, 100];
+  const [donationType, setDonationType] = useState<'oneoff' | 'monthly'>('oneoff');
+  const donationAmounts = [10, 25, 50, 100];
+
+  const handleAddToDonationCart = () => {
+    if (!selectedAmount) {
+      toast({
+        title: "Please select an amount",
+        description: "Choose a donation amount to continue.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const newItem: DonationItem = {
+      id: Date.now().toString(),
+      appeal: 'Quick Donate',
+      amount: selectedAmount,
+      quantity: 1,
+      isMonthly: donationType === 'monthly'
+    };
+
+    setCartItems([...cartItems, newItem]);
+    setSelectedAmount(null);
+
+    toast({
+      title: "Added to basket! 💚",
+      description: `£${selectedAmount} ${donationType === 'monthly' ? 'monthly ' : ''}donation added`,
+    });
+  };
   const appeals = [
     'Emergency Relief Fund',
     'Education for Girls',
@@ -348,8 +377,67 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Modern Quick Donate Section */}
-      <section id="quick-donate" className="py-20 bg-gradient-to-br from-gray-50 to-white">
+      {/* Quick Donate Section - Linear Layout */}
+      <section id="quick-donate" className="py-12 bg-white border-b">
+        <div className="container mx-auto px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="flex flex-col lg:flex-row items-center gap-8">
+              {/* Donation Type Toggle */}
+              <div className="flex bg-gray-100 rounded-lg p-1">
+                <button
+                  onClick={() => setDonationType('oneoff')}
+                  className={`px-4 py-2 rounded-md font-medium transition-all text-sm ${
+                    donationType === 'oneoff'
+                      ? 'bg-primary text-white shadow-md'
+                      : 'text-gray-600 hover:text-primary'
+                  }`}
+                >
+                  One-off
+                </button>
+                <button
+                  onClick={() => setDonationType('monthly')}
+                  className={`px-4 py-2 rounded-md font-medium transition-all text-sm ${
+                    donationType === 'monthly'
+                      ? 'bg-primary text-white shadow-md'
+                      : 'text-gray-600 hover:text-primary'
+                  }`}
+                >
+                  Monthly
+                </button>
+              </div>
+
+              {/* Amount Options */}
+              <div className="flex gap-3">
+                {donationAmounts.map((amount) => (
+                  <button
+                    key={amount}
+                    onClick={() => setSelectedAmount(amount)}
+                    className={`px-4 py-3 rounded-lg border-2 transition-all duration-300 min-w-[80px] ${
+                      selectedAmount === amount
+                        ? 'border-primary bg-primary text-white shadow-lg'
+                        : 'border-gray-200 bg-white text-gray-700 hover:border-primary/50'
+                    }`}
+                  >
+                    <div className="font-bold">£{amount}</div>
+                  </button>
+                ))}
+              </div>
+
+              {/* Donate Now Button */}
+              <button
+                onClick={handleAddToDonationCart}
+                disabled={!selectedAmount}
+                className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-medium transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Donate Now
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Modern Donation Form Section */}
+      <section className="py-20 bg-gradient-to-br from-gray-50 to-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-6">
@@ -466,18 +554,18 @@ const Index = () => {
           </div>
           
           <div className="max-w-4xl mx-auto">
-            <div className="relative aspect-video bg-gray-800 rounded-2xl overflow-hidden shadow-2xl group cursor-pointer">
-              <div className="absolute inset-0 bg-gradient-to-r from-red-600/20 to-transparent" />
-              <div className="absolute inset-0 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <div className="bg-white/10 backdrop-blur rounded-full p-6 group-hover:bg-red-600 transition-colors duration-300">
-                  <Play className="h-12 w-12 text-white ml-1" />
-                </div>
-              </div>
-              <img 
-                src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=1200&h=600&fit=crop" 
-                alt="Video thumbnail showing healthcare for women"
-                className="w-full h-full object-cover"
-              />
+            <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl">
+              <iframe
+                width="100%"
+                height="100%"
+                src="https://www.youtube.com/embed/ch_qz8TcMu8"
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+                className="w-full h-full"
+              ></iframe>
             </div>
             <div className="text-center mt-8">
               <p className="text-gray-300 text-lg italic">
@@ -570,26 +658,13 @@ const Index = () => {
                 </div>
                 <CardContent className="p-8">
                   <h3 className="text-2xl font-bold mb-4 text-gray-900">{campaign.title}</h3>
-                  <p className="text-gray-600 mb-6 text-lg leading-relaxed">{campaign.description}</p>
+                  <p className="text-gray-600 mb-8 text-lg leading-relaxed">{campaign.description}</p>
                   
-                  <div className="space-y-4">
-                    <div className="flex justify-between text-sm font-medium">
-                      <span className="text-gray-600">£{campaign.raised.toLocaleString()} raised</span>
-                      <span className="text-gray-600">£{campaign.goal.toLocaleString()} goal</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-3">
-                      <div 
-                        className="bg-red-600 h-3 rounded-full transition-all duration-500"
-                        style={{ width: `${(campaign.raised / campaign.goal) * 100}%` }}
-                      />
-                    </div>
-                    <div className="flex items-center justify-between pt-2">
-                      <span className="text-sm text-gray-600 font-medium">{campaign.supporters} supporters</span>
-                      <Button className="bg-red-600 hover:bg-red-700 text-white font-semibold px-6">
-                        <Heart className="h-4 w-4 mr-2" />
-                        Donate Now
-                      </Button>
-                    </div>
+                  <div className="text-center">
+                    <Button className="bg-red-600 hover:bg-red-700 text-white font-semibold px-8 py-3">
+                      <Heart className="h-4 w-4 mr-2" />
+                      Donate Now
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
