@@ -48,14 +48,23 @@ const Index = () => {
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const [customAmount, setCustomAmount] = useState('');
   const [isMonthly, setIsMonthly] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
   const { toast } = useToast();
 
   const presetAmounts = [10, 25, 50, 100];
   const [donationType, setDonationType] = useState<'oneoff' | 'monthly'>('oneoff');
   const donationAmounts = [10, 25, 50, 100];
 
+  const heroImages = [
+    'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=1920&h=600&fit=crop',
+    'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1920&h=600&fit=crop',
+    'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=1920&h=600&fit=crop'
+  ];
+
   const handleAddToDonationCart = () => {
-    if (!selectedAmount) {
+    const finalAmount = parseFloat(customAmount) || selectedAmount;
+    
+    if (!finalAmount || finalAmount <= 0) {
       toast({
         title: "Please select an amount",
         description: "Choose a donation amount to continue.",
@@ -67,19 +76,21 @@ const Index = () => {
     const newItem: DonationItem = {
       id: Date.now().toString(),
       appeal: 'Quick Donate',
-      amount: selectedAmount,
+      amount: finalAmount,
       quantity: 1,
       isMonthly: donationType === 'monthly'
     };
 
     setCartItems([...cartItems, newItem]);
     setSelectedAmount(null);
+    setCustomAmount('');
 
     toast({
       title: "Added to basket! 💚",
-      description: `£${selectedAmount} ${donationType === 'monthly' ? 'monthly ' : ''}donation added`,
+      description: `£${finalAmount} ${donationType === 'monthly' ? 'monthly ' : ''}donation added`,
     });
   };
+
   const appeals = [
     'Emergency Relief Fund',
     'Education for Girls',
@@ -87,6 +98,14 @@ const Index = () => {
     'Economic Empowerment',
     'Safe Housing Initiative'
   ];
+
+  // Auto-rotate slides
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroImages.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [heroImages.length]);
 
   const campaigns = [
     {
@@ -331,57 +350,81 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Modern Hero Banner */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+      {/* Compact Hero Banner with Image Slider */}
+      <section className="relative h-96 flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
-          <img 
-            src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=1920&h=1080&fit=crop" 
-            alt="Women empowerment community gathering"
-            className="w-full h-full object-cover"
-          />
+          {heroImages.map((image, index) => (
+            <div
+              key={index}
+              className={`absolute inset-0 transition-opacity duration-1000 ${
+                index === currentSlide ? 'opacity-100' : 'opacity-0'
+              }`}
+            >
+              <img 
+                src={image}
+                alt={`Women empowerment slide ${index + 1}`}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ))}
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
         </div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="text-white max-w-4xl mx-auto">
-            <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight">
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
               Empowering <span className="text-red-500">Forgotten</span><br />
               Women Worldwide
             </h1>
-            <p className="text-xl md:text-2xl mb-12 opacity-90 max-w-3xl mx-auto">
+            <p className="text-lg md:text-xl mb-8 opacity-90 max-w-3xl mx-auto">
               Supporting forgotten women through emergency relief, education, 
               and empowerment programs led by women, for women.
             </p>
-            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
                 size="lg" 
-                className="bg-red-600 hover:bg-red-700 text-white font-semibold px-8 py-4 text-lg"
+                className="bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-3"
                 onClick={() => document.getElementById('quick-donate')?.scrollIntoView({ behavior: 'smooth' })}
               >
-                <Heart className="h-5 w-5 mr-2" />
+                <Heart className="h-4 w-4 mr-2" />
                 Donate Now
-                <ArrowRight className="h-5 w-5 ml-2" />
+                <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="border-white text-white hover:bg-white hover:text-gray-900 font-semibold px-8 py-4 text-lg"
+                className="border-white text-white hover:bg-white hover:text-gray-900 font-semibold px-6 py-3"
               >
-                <Play className="h-5 w-5 mr-2" />
+                <Play className="h-4 w-4 mr-2" />
                 Watch Our Story
               </Button>
             </div>
           </div>
         </div>
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white animate-bounce">
-          <ChevronRight className="h-6 w-6 rotate-90" />
+        
+        {/* Slide Indicators */}
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+          {heroImages.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              className={`w-3 h-3 rounded-full transition-all ${
+                index === currentSlide ? 'bg-white' : 'bg-white/50'
+              }`}
+            />
+          ))}
         </div>
       </section>
 
-      {/* Quick Donate Section - Linear Layout */}
-      <section id="quick-donate" className="py-12 bg-white border-b">
+      {/* Quick Donate Section - Linear Layout with Custom Amount */}
+      <section id="quick-donate" className="py-16 bg-white border-b">
         <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex flex-col lg:flex-row items-center gap-8">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Quick Donate</h2>
+            <p className="text-lg text-gray-600">Make a difference with just a few clicks</p>
+          </div>
+          
+          <div className="max-w-5xl mx-auto">
+            <div className="flex flex-col lg:flex-row items-center justify-center gap-6">
               {/* Donation Type Toggle */}
               <div className="flex bg-gray-100 rounded-lg p-1">
                 <button
@@ -411,7 +454,10 @@ const Index = () => {
                 {donationAmounts.map((amount) => (
                   <button
                     key={amount}
-                    onClick={() => setSelectedAmount(amount)}
+                    onClick={() => {
+                      setSelectedAmount(amount);
+                      setCustomAmount('');
+                    }}
                     className={`px-4 py-3 rounded-lg border-2 transition-all duration-300 min-w-[80px] ${
                       selectedAmount === amount
                         ? 'border-primary bg-primary text-white shadow-lg'
@@ -423,118 +469,31 @@ const Index = () => {
                 ))}
               </div>
 
+              {/* Custom Amount Input */}
+              <div className="flex items-center gap-2">
+                <span className="text-gray-600 text-sm">or</span>
+                <Input
+                  type="number"
+                  placeholder="Custom amount"
+                  value={customAmount}
+                  onChange={(e) => {
+                    setCustomAmount(e.target.value);
+                    setSelectedAmount(null);
+                  }}
+                  className="w-32 h-12 border-2 border-gray-200 focus:border-primary"
+                />
+              </div>
+
               {/* Donate Now Button */}
               <button
                 onClick={handleAddToDonationCart}
-                disabled={!selectedAmount}
+                disabled={(!selectedAmount && !customAmount)}
                 className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-medium transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Donate Now
               </button>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Modern Donation Form Section */}
-      <section className="py-20 bg-gradient-to-br from-gray-50 to-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-6">
-              <Heart className="h-8 w-8 text-red-600" />
-            </div>
-            <h2 className="text-4xl font-bold mb-4 text-gray-900">Make a Difference Today</h2>
-            <p className="text-xl text-gray-600">Choose your impact and help us support women in need</p>
-          </div>
-          
-          <Card className="bg-white shadow-xl border-0 rounded-2xl overflow-hidden">
-            <CardContent className="p-8">
-              <div className="space-y-8">
-                {/* Appeal Selection */}
-                <div>
-                  <label className="block text-lg font-semibold mb-4 text-gray-800">Select Your Cause</label>
-                  <Select value={selectedAppeal} onValueChange={setSelectedAppeal}>
-                    <SelectTrigger className="w-full h-14 text-lg rounded-xl border-2">
-                      <SelectValue placeholder="Choose which cause to support" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {appeals.map((appeal) => (
-                        <SelectItem key={appeal} value={appeal} className="text-lg py-3">{appeal}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Donation Type Switch */}
-                <div className="flex items-center justify-center space-x-6 p-4 bg-gray-50 rounded-xl">
-                  <span className={`text-lg font-medium ${!isMonthly ? 'text-red-600' : 'text-gray-500'}`}>
-                    One-off
-                  </span>
-                  <Switch
-                    checked={isMonthly}
-                    onCheckedChange={setIsMonthly}
-                    className="data-[state=checked]:bg-red-600"
-                  />
-                  <span className={`text-lg font-medium ${isMonthly ? 'text-red-600' : 'text-gray-500'}`}>
-                    Monthly
-                  </span>
-                </div>
-                
-                {/* Preset Amounts */}
-                <div>
-                  <label className="block text-lg font-semibold mb-6 text-gray-800">Choose Amount</label>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                    {presetAmounts.map((amount) => (
-                      <Button
-                        key={amount}
-                        variant={selectedAmount === amount ? "default" : "outline"}
-                        className={`h-20 text-xl font-bold rounded-xl transition-all ${
-                          selectedAmount === amount 
-                            ? "bg-red-600 text-white hover:bg-red-700 shadow-lg scale-105" 
-                            : "border-2 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-600"
-                        }`}
-                        onClick={() => {
-                          setSelectedAmount(amount);
-                          setCustomAmount('');
-                        }}
-                      >
-                        £{amount}
-                        {isMonthly && <span className="text-sm">/month</span>}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-                
-                {/* Custom Amount */}
-                <div>
-                  <label className="block text-lg font-semibold mb-4 text-gray-800">Or Enter Custom Amount</label>
-                  <Input
-                    type="number"
-                    placeholder="Enter amount"
-                    value={customAmount}
-                    onChange={(e) => {
-                      setCustomAmount(e.target.value);
-                      setSelectedAmount(null);
-                    }}
-                    className="h-14 text-lg rounded-xl border-2 focus:border-red-600"
-                  />
-                </div>
-
-                {/* Donate Now Button */}
-                <div className="pt-6">
-                  <Button
-                    className="w-full h-16 bg-red-600 hover:bg-red-700 text-white px-8 font-bold text-xl rounded-xl shadow-lg hover:shadow-xl transition-all"
-                    onClick={addToCart}
-                    disabled={!selectedAppeal || (!selectedAmount && !customAmount)}
-                  >
-                    <Heart className="h-6 w-6 mr-3" />
-                    Donate Now
-                    <ArrowRight className="h-6 w-6 ml-3" />
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </section>
 
@@ -577,7 +536,7 @@ const Index = () => {
       </section>
 
       {/* Modern About Section */}
-      <section id="about" className="py-24 bg-white">
+      <section id="about" className="py-24 bg-gradient-to-br from-primary/5 to-accent/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
@@ -590,10 +549,10 @@ const Index = () => {
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="text-center hover:shadow-xl transition-all duration-300 border-0 rounded-2xl bg-gradient-to-br from-red-50 to-white group">
+            <Card className="text-center hover:shadow-xl transition-all duration-300 border-0 rounded-2xl bg-gradient-to-br from-primary/5 to-white group">
               <CardContent className="pt-8 pb-8">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-6 group-hover:bg-red-600 transition-colors duration-300">
-                  <Shield className="h-8 w-8 text-red-600 group-hover:text-white transition-colors duration-300" />
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-6 group-hover:bg-primary transition-colors duration-300">
+                  <Shield className="h-8 w-8 text-primary group-hover:text-white transition-colors duration-300" />
                 </div>
                 <h3 className="text-2xl font-bold mb-4 text-gray-900">Safe & Secure</h3>
                 <p className="text-gray-600 text-lg leading-relaxed">
@@ -602,10 +561,10 @@ const Index = () => {
               </CardContent>
             </Card>
             
-            <Card className="text-center hover:shadow-xl transition-all duration-300 border-0 rounded-2xl bg-gradient-to-br from-red-50 to-white group">
+            <Card className="text-center hover:shadow-xl transition-all duration-300 border-0 rounded-2xl bg-gradient-to-br from-primary/5 to-white group">
               <CardContent className="pt-8 pb-8">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-6 group-hover:bg-red-600 transition-colors duration-300">
-                  <Users className="h-8 w-8 text-red-600 group-hover:text-white transition-colors duration-300" />
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-6 group-hover:bg-primary transition-colors duration-300">
+                  <Users className="h-8 w-8 text-primary group-hover:text-white transition-colors duration-300" />
                 </div>
                 <h3 className="text-2xl font-bold mb-4 text-gray-900">Women-Led</h3>
                 <p className="text-gray-600 text-lg leading-relaxed">
@@ -614,10 +573,10 @@ const Index = () => {
               </CardContent>
             </Card>
             
-            <Card className="text-center hover:shadow-xl transition-all duration-300 border-0 rounded-2xl bg-gradient-to-br from-red-50 to-white group">
+            <Card className="text-center hover:shadow-xl transition-all duration-300 border-0 rounded-2xl bg-gradient-to-br from-primary/5 to-white group">
               <CardContent className="pt-8 pb-8">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-6 group-hover:bg-red-600 transition-colors duration-300">
-                  <Globe className="h-8 w-8 text-red-600 group-hover:text-white transition-colors duration-300" />
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-6 group-hover:bg-primary transition-colors duration-300">
+                  <Globe className="h-8 w-8 text-primary group-hover:text-white transition-colors duration-300" />
                 </div>
                 <h3 className="text-2xl font-bold mb-4 text-gray-900">Global Impact</h3>
                 <p className="text-gray-600 text-lg leading-relaxed">
@@ -630,7 +589,7 @@ const Index = () => {
       </section>
 
       {/* Modern Active Campaigns */}
-      <section id="campaigns" className="py-24 bg-gradient-to-br from-gray-50 to-white">
+      <section id="campaigns" className="py-24 bg-gradient-to-br from-gray-50 to-primary/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
@@ -651,8 +610,8 @@ const Index = () => {
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                   />
                   <div className="absolute top-4 right-4">
-                    <Badge className="bg-red-600 text-white px-3 py-1 text-sm font-semibold">
-                      {Math.round((campaign.raised / campaign.goal) * 100)}% funded
+                    <Badge className="bg-primary text-white px-3 py-1 text-sm font-semibold">
+                      Active
                     </Badge>
                   </div>
                 </div>
@@ -784,10 +743,10 @@ const Index = () => {
       </section>
 
       {/* Newsletter */}
-      <section className="py-24 bg-red-600 text-white">
+      <section className="py-24 bg-gradient-to-br from-primary/10 to-primary/5 text-gray-900">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl font-bold mb-6">Stay Connected</h2>
-          <p className="text-xl mb-12 opacity-90">
+          <p className="text-xl mb-12 opacity-80">
             Get updates on our impact and opportunities to help
           </p>
           
@@ -795,9 +754,9 @@ const Index = () => {
             <Input 
               type="email" 
               placeholder="Enter your email"
-              className="bg-white text-gray-900 border-0 h-14 text-lg rounded-xl"
+              className="bg-white text-gray-900 border-2 border-primary/20 h-14 text-lg rounded-xl focus:border-primary"
             />
-            <Button className="bg-white text-red-600 hover:bg-gray-100 h-14 px-8 font-semibold text-lg rounded-xl">
+            <Button className="bg-primary text-white hover:bg-primary/90 h-14 px-8 font-semibold text-lg rounded-xl">
               Subscribe
             </Button>
           </div>
