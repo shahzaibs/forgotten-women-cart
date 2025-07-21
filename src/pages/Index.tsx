@@ -350,8 +350,8 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Compact Hero Banner with Image Slider */}
-      <section className="relative h-96 flex items-center justify-center overflow-hidden">
+      {/* Hero Banner with Image Slider */}
+      <section className="relative h-[500px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           {heroImages.map((image, index) => (
             <div
@@ -416,14 +416,15 @@ const Index = () => {
       </section>
 
       {/* Quick Donate Section - Linear Layout with Custom Amount */}
-      <section id="quick-donate" className="py-16 bg-white border-b">
-        <div className="container mx-auto px-4">
+      <section id="quick-donate" className="py-16 bg-primary/10 relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/15" />
+        <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Quick Donate</h2>
             <p className="text-lg text-gray-600">Make a difference with just a few clicks</p>
           </div>
           
-          <div className="max-w-5xl mx-auto">
+          <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl p-8 border border-primary/20">
             <div className="flex flex-col lg:flex-row items-center justify-center gap-6">
               {/* Donation Type Toggle */}
               <div className="flex bg-gray-100 rounded-lg p-1">
@@ -647,8 +648,12 @@ const Index = () => {
           <div className="grid md:grid-cols-2 gap-8">
             <Card className="p-8 hover:shadow-2xl transition-all duration-300 border-0 rounded-2xl bg-white">
               <div className="flex items-start gap-6">
-                <div className="w-20 h-20 bg-red-600 rounded-full flex items-center justify-center text-white text-3xl font-bold flex-shrink-0">
-                  A
+                <div className="w-20 h-20 rounded-full overflow-hidden flex-shrink-0">
+                  <img 
+                    src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=80&h=80&fit=crop&crop=face"
+                    alt="Amara"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold mb-4 text-gray-900">Amara's Education Journey</h3>
@@ -656,7 +661,7 @@ const Index = () => {
                     "Thanks to Forgotten Women, I was able to complete my education and now work as a teacher, 
                     helping other girls in my community access learning opportunities."
                   </p>
-                  <div className="flex items-center text-gray-500 font-medium">
+                  <div className="flex items-center text-primary font-medium">
                     <MapPin className="h-5 w-5 mr-2" />
                     Afghanistan
                   </div>
@@ -666,8 +671,12 @@ const Index = () => {
             
             <Card className="p-8 hover:shadow-2xl transition-all duration-300 border-0 rounded-2xl bg-white">
               <div className="flex items-start gap-6">
-                <div className="w-20 h-20 bg-red-600 rounded-full flex items-center justify-center text-white text-3xl font-bold flex-shrink-0">
-                  S
+                <div className="w-20 h-20 rounded-full overflow-hidden flex-shrink-0">
+                  <img 
+                    src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=80&h=80&fit=crop&crop=face"
+                    alt="Sarah"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold mb-4 text-gray-900">Sarah's New Beginning</h3>
@@ -675,7 +684,7 @@ const Index = () => {
                     "The safe housing program gave me the security I needed to rebuild my life. 
                     I now run a small business and support other women in similar situations."
                   </p>
-                  <div className="flex items-center text-gray-500 font-medium">
+                  <div className="flex items-center text-primary font-medium">
                     <MapPin className="h-5 w-5 mr-2" />
                     Syria
                   </div>
@@ -699,9 +708,9 @@ const Index = () => {
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="text-center p-8 hover:shadow-xl transition-all duration-300 border-0 rounded-2xl bg-gradient-to-br from-red-50 to-white group">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-6 group-hover:bg-red-600 transition-colors duration-300">
-                <Heart className="h-8 w-8 text-red-600 group-hover:text-white transition-colors duration-300" />
+            <Card className="text-center p-8 hover:shadow-xl transition-all duration-300 border-0 rounded-2xl bg-gradient-to-br from-primary/10 to-white group">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/20 rounded-full mb-6 group-hover:bg-primary transition-colors duration-300">
+                <Heart className="h-8 w-8 text-primary group-hover:text-white transition-colors duration-300" />
               </div>
               <h3 className="text-2xl font-bold mb-4 text-gray-900">Donate</h3>
               <p className="text-gray-600 mb-8 text-lg leading-relaxed">
@@ -713,28 +722,28 @@ const Index = () => {
               </Button>
             </Card>
             
-            <Card className="text-center p-8 hover:shadow-xl transition-all duration-300 border-0 rounded-2xl bg-gradient-to-br from-red-50 to-white group">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-6 group-hover:bg-red-600 transition-colors duration-300">
-                <Users className="h-8 w-8 text-red-600 group-hover:text-white transition-colors duration-300" />
+            <Card className="text-center p-8 hover:shadow-xl transition-all duration-300 border-0 rounded-2xl bg-gradient-to-br from-primary/10 to-white group">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/20 rounded-full mb-6 group-hover:bg-primary transition-colors duration-300">
+                <Users className="h-8 w-8 text-primary group-hover:text-white transition-colors duration-300" />
               </div>
               <h3 className="text-2xl font-bold mb-4 text-gray-900">Volunteer</h3>
               <p className="text-gray-600 mb-8 text-lg leading-relaxed">
                 Join our team of dedicated volunteers making a difference
               </p>
-              <Button variant="outline" className="border-red-600 text-red-600 hover:bg-red-600 hover:text-white font-semibold px-6">
+              <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white font-semibold px-6">
                 Get Involved
               </Button>
             </Card>
             
-            <Card className="text-center p-8 hover:shadow-xl transition-all duration-300 border-0 rounded-2xl bg-gradient-to-br from-red-50 to-white group">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-6 group-hover:bg-red-600 transition-colors duration-300">
-                <Award className="h-8 w-8 text-red-600 group-hover:text-white transition-colors duration-300" />
+            <Card className="text-center p-8 hover:shadow-xl transition-all duration-300 border-0 rounded-2xl bg-gradient-to-br from-primary/10 to-white group">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/20 rounded-full mb-6 group-hover:bg-primary transition-colors duration-300">
+                <Award className="h-8 w-8 text-primary group-hover:text-white transition-colors duration-300" />
               </div>
               <h3 className="text-2xl font-bold mb-4 text-gray-900">Advocate</h3>
               <p className="text-gray-600 mb-8 text-lg leading-relaxed">
                 Raise awareness and advocate for women's rights in your community
               </p>
-              <Button variant="outline" className="border-red-600 text-red-600 hover:bg-red-600 hover:text-white font-semibold px-6">
+              <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white font-semibold px-6">
                 Learn How
               </Button>
             </Card>
@@ -742,23 +751,25 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Newsletter */}
-      <section className="py-24 bg-gradient-to-br from-primary/10 to-primary/5 text-gray-900">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold mb-6">Stay Connected</h2>
-          <p className="text-xl mb-12 opacity-80">
-            Get updates on our impact and opportunities to help
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-            <Input 
-              type="email" 
-              placeholder="Enter your email"
-              className="bg-white text-gray-900 border-2 border-primary/20 h-14 text-lg rounded-xl focus:border-primary"
-            />
-            <Button className="bg-primary text-white hover:bg-primary/90 h-14 px-8 font-semibold text-lg rounded-xl">
-              Subscribe
-            </Button>
+      {/* Newsletter - Compact Popup Style */}
+      <section className="py-16 bg-gradient-to-br from-primary/5 to-white">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white rounded-2xl shadow-xl p-8 border border-primary/20 text-center">
+            <h2 className="text-2xl font-bold mb-4 text-gray-900">Stay Connected</h2>
+            <p className="text-gray-600 mb-6">
+              Get updates on our impact and opportunities to help
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-3 max-w-sm mx-auto">
+              <Input 
+                type="email" 
+                placeholder="Enter your email"
+                className="bg-gray-50 text-gray-900 border border-gray-200 h-12 rounded-lg focus:border-primary"
+              />
+              <Button className="bg-primary text-white hover:bg-primary/90 h-12 px-6 font-medium rounded-lg whitespace-nowrap">
+                Subscribe
+              </Button>
+            </div>
           </div>
         </div>
       </section>
