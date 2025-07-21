@@ -17,7 +17,6 @@ import {
   Shield, 
   Globe, 
   Award,
-  ChevronRight,
   Facebook,
   Twitter,
   Instagram,
@@ -25,6 +24,8 @@ import {
   Mail,
   Phone,
   MapPin,
+  ChevronLeft,
+  ChevronRight,
   Minus,
   Play,
   ArrowRight,
@@ -131,8 +132,36 @@ const Index = () => {
       goal: 30000,
       supporters: 389,
       image: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600&h=400&fit=crop'
+    },
+    {
+      title: 'Healthcare Access for Mothers',
+      description: 'Providing essential healthcare services to mothers in remote areas.',
+      raised: 12300,
+      goal: 20000,
+      supporters: 198,
+      image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=600&h=400&fit=crop'
+    },
+    {
+      title: 'Economic Empowerment Training',
+      description: 'Skills training and microfinance for women entrepreneurs.',
+      raised: 18750,
+      goal: 25000,
+      supporters: 267,
+      image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&h=400&fit=crop'
+    },
+    {
+      title: 'Mental Health Support Program',
+      description: 'Counseling and therapy services for trauma survivors.',
+      raised: 9850,
+      goal: 18000,
+      supporters: 143,
+      image: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=600&h=400&fit=crop'
     }
   ];
+
+  const [currentCampaignSlide, setCurrentCampaignSlide] = useState(0);
+  const campaignsPerSlide = 3;
+  const totalSlides = Math.ceil(campaigns.length / campaignsPerSlide);
 
   const addToCart = () => {
     const finalAmount = parseFloat(customAmount) || selectedAmount;
@@ -208,6 +237,27 @@ const Index = () => {
 
   const getTotalItems = () => {
     return cartItems.reduce((total, item) => total + item.quantity, 0);
+  };
+
+  const addCampaignToCart = (campaign: typeof campaigns[0]) => {
+    const newItem: DonationItem = {
+      id: Date.now().toString(),
+      appeal: campaign.title,
+      amount: 25, // Default amount
+      quantity: 1,
+      isMonthly: false
+    };
+
+    setCartItems([...cartItems, newItem]);
+    toast({
+      title: "Added to basket! 💚",
+      description: `£25 donation to ${campaign.title}`,
+    });
+  };
+
+  const getUpsellSuggestions = () => {
+    const currentAppeals = cartItems.map(item => item.appeal);
+    return campaigns.filter(campaign => !currentAppeals.includes(campaign.title)).slice(0, 2);
   };
 
   return (
@@ -317,6 +367,31 @@ const Index = () => {
                 </div>
               )}
             </div>
+            
+            {/* Upsell Suggestions */}
+            {cartItems.length > 0 && getUpsellSuggestions().length > 0 && (
+              <div className="border-t p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">You might also like:</h3>
+                <div className="space-y-3">
+                  {getUpsellSuggestions().map((campaign) => (
+                    <div key={campaign.title} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div className="flex-1">
+                        <p className="font-medium text-gray-900 text-sm">{campaign.title}</p>
+                        <p className="text-primary text-sm font-bold">£25 donation</p>
+                      </div>
+                      <Button 
+                        size="sm"
+                        variant="outline"
+                        onClick={() => addCampaignToCart(campaign)}
+                        className="border-primary text-primary hover:bg-primary hover:text-white text-xs px-3"
+                      >
+                        Add
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             
             {cartItems.length > 0 && (
               <div className="border-t p-6">
@@ -498,6 +573,103 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Active Campaigns Carousel */}
+      <section id="campaigns" className="py-24 bg-gradient-to-br from-gray-50 to-primary/5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              Active Campaigns
+            </h2>
+            <p className="text-xl text-gray-600">
+              Support our current initiatives making a difference in women's lives
+            </p>
+          </div>
+          
+          <div className="relative">
+            <div className="overflow-hidden">
+              <div 
+                className="flex transition-transform duration-300 ease-in-out"
+                style={{ transform: `translateX(-${currentCampaignSlide * 100}%)` }}
+              >
+                {Array.from({ length: totalSlides }).map((_, slideIndex) => (
+                  <div key={slideIndex} className="w-full flex-shrink-0">
+                    <div className="grid md:grid-cols-3 gap-8">
+                      {campaigns
+                        .slice(slideIndex * campaignsPerSlide, (slideIndex + 1) * campaignsPerSlide)
+                        .map((campaign, index) => (
+                        <Card key={index} className="overflow-hidden hover:shadow-2xl transition-all duration-300 border-0 rounded-2xl group">
+                          <div className="h-64 bg-gray-200 relative overflow-hidden">
+                            <img 
+                              src={campaign.image} 
+                              alt={campaign.title}
+                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                            />
+                            <div className="absolute top-4 right-4">
+                              <Badge className="bg-primary text-white px-3 py-1 text-sm font-semibold">
+                                Active
+                              </Badge>
+                            </div>
+                          </div>
+                          <CardContent className="p-8">
+                            <h3 className="text-2xl font-bold mb-4 text-gray-900">{campaign.title}</h3>
+                            <p className="text-gray-600 mb-8 text-lg leading-relaxed">{campaign.description}</p>
+                            
+                            <div className="text-center">
+                              <Button 
+                                className="bg-red-600 hover:bg-red-700 text-white font-semibold px-8 py-3"
+                                onClick={() => addCampaignToCart(campaign)}
+                              >
+                                <Heart className="h-4 w-4 mr-2" />
+                                Donate Now
+                              </Button>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            {/* Carousel Controls */}
+            <div className="flex justify-center items-center mt-8 gap-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentCampaignSlide(Math.max(0, currentCampaignSlide - 1))}
+                disabled={currentCampaignSlide === 0}
+                className="border-primary text-primary hover:bg-primary hover:text-white"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              
+              <div className="flex space-x-2">
+                {Array.from({ length: totalSlides }).map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentCampaignSlide(index)}
+                    className={`w-3 h-3 rounded-full transition-all ${
+                      index === currentCampaignSlide ? 'bg-primary' : 'bg-gray-300'
+                    }`}
+                  />
+                ))}
+              </div>
+              
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentCampaignSlide(Math.min(totalSlides - 1, currentCampaignSlide + 1))}
+                disabled={currentCampaignSlide === totalSlides - 1}
+                className="border-primary text-primary hover:bg-primary hover:text-white"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Video Section */}
       <section className="py-24 bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -585,50 +757,6 @@ const Index = () => {
                 </p>
               </CardContent>
             </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Modern Active Campaigns */}
-      <section id="campaigns" className="py-24 bg-gradient-to-br from-gray-50 to-primary/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Active Campaigns
-            </h2>
-            <p className="text-xl text-gray-600">
-              Support our current initiatives making a difference in women's lives
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            {campaigns.map((campaign, index) => (
-              <Card key={index} className="overflow-hidden hover:shadow-2xl transition-all duration-300 border-0 rounded-2xl group">
-                <div className="h-64 bg-gray-200 relative overflow-hidden">
-                  <img 
-                    src={campaign.image} 
-                    alt={campaign.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                  />
-                  <div className="absolute top-4 right-4">
-                    <Badge className="bg-primary text-white px-3 py-1 text-sm font-semibold">
-                      Active
-                    </Badge>
-                  </div>
-                </div>
-                <CardContent className="p-8">
-                  <h3 className="text-2xl font-bold mb-4 text-gray-900">{campaign.title}</h3>
-                  <p className="text-gray-600 mb-8 text-lg leading-relaxed">{campaign.description}</p>
-                  
-                  <div className="text-center">
-                    <Button className="bg-red-600 hover:bg-red-700 text-white font-semibold px-8 py-3">
-                      <Heart className="h-4 w-4 mr-2" />
-                      Donate Now
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
           </div>
         </div>
       </section>
