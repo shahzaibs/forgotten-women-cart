@@ -262,7 +262,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
-      {/* Modern Navigation */}
+      {/* Modern Navigation with Mobile Menu */}
       <nav className="bg-white/80 backdrop-blur-md shadow-sm border-b sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -273,13 +273,14 @@ const Index = () => {
                 className="h-10 w-auto filter brightness-0"
               />
             </div>
-            <div className="flex items-center space-x-8">
-              <a href="#about" className="text-gray-700 hover:text-red-600 transition-colors font-medium">About</a>
-              <a href="#campaigns" className="text-gray-700 hover:text-red-600 transition-colors font-medium">Campaigns</a>
-              <a href="#involved" className="text-gray-700 hover:text-red-600 transition-colors font-medium">Get Involved</a>
+            
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-8">
+              <a href="#about" className="text-gray-700 hover:text-primary transition-colors font-medium">About</a>
+              <a href="#campaigns" className="text-gray-700 hover:text-primary transition-colors font-medium">Campaigns</a>
+              <a href="#involved" className="text-gray-700 hover:text-primary transition-colors font-medium">Get Involved</a>
               <Button
-                className="bg-red-600 hover:bg-red-700 text-white font-medium px-6"
-                onClick={() => document.getElementById('quick-donate')?.scrollIntoView({ behavior: 'smooth' })}
+                className="bg-primary hover:bg-primary/90 text-white font-medium px-6"
               >
                 <Heart className="h-4 w-4 mr-2" />
                 Donate Now
@@ -287,13 +288,30 @@ const Index = () => {
               <Button
                 variant="outline"
                 size="sm"
-                className="relative border-red-600 text-red-600 hover:bg-red-600 hover:text-white font-medium"
+                className="relative border-primary text-primary hover:bg-primary hover:text-white font-medium"
                 onClick={() => setIsCartOpen(true)}
               >
                 <ShoppingCart className="h-4 w-4 mr-2" />
                 Basket
                 {getTotalItems() > 0 && (
-                  <Badge className="ml-2 bg-red-600 text-white">
+                  <Badge className="ml-2 bg-primary text-white">
+                    {getTotalItems()}
+                  </Badge>
+                )}
+              </Button>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <div className="md:hidden flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="relative border-primary text-primary hover:bg-primary hover:text-white"
+                onClick={() => setIsCartOpen(true)}
+              >
+                <ShoppingCart className="h-4 w-4" />
+                {getTotalItems() > 0 && (
+                  <Badge className="ml-1 bg-primary text-white text-xs px-1">
                     {getTotalItems()}
                   </Badge>
                 )}
@@ -328,7 +346,7 @@ const Index = () => {
                     <div key={item.id} className="flex items-center justify-between p-4 border rounded-lg">
                       <div className="flex-1">
                         <p className="font-medium text-gray-900">{item.appeal}</p>
-                        <p className="text-red-600 font-bold">
+                        <p className="text-primary font-bold">
                           £{item.amount} {item.isMonthly ? 'monthly' : 'one-off'}
                         </p>
                         <div className="flex items-center gap-2 mt-2">
@@ -397,11 +415,11 @@ const Index = () => {
               <div className="border-t p-6">
                 <div className="flex justify-between items-center mb-4">
                   <span className="text-lg font-semibold text-gray-900">Total:</span>
-                  <span className="text-2xl font-bold text-red-600">£{getTotalAmount()}</span>
+                  <span className="text-2xl font-bold text-primary">£{getTotalAmount()}</span>
                 </div>
                 <div className="space-y-3">
                   <Button 
-                    className="w-full bg-red-600 hover:bg-red-700 text-white font-medium"
+                    className="w-full bg-primary hover:bg-primary/90 text-white font-medium"
                     onClick={() => {
                       toast({
                         title: "Redirecting to secure checkout",
@@ -425,8 +443,8 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Hero Banner with Image Slider */}
-      <section className="relative h-[500px] flex items-center justify-center overflow-hidden">
+      {/* Hero Banner with Image Slider and Quick Donate Widget */}
+      <section className="relative h-[650px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           {heroImages.map((image, index) => (
             <div
@@ -444,34 +462,84 @@ const Index = () => {
           ))}
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
         </div>
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="text-white max-w-4xl mx-auto">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-              Empowering <span className="text-red-500">Forgotten</span><br />
-              Women Worldwide
-            </h1>
-            <p className="text-lg md:text-xl mb-8 opacity-90 max-w-3xl mx-auto">
-              Supporting forgotten women through emergency relief, education, 
-              and empowerment programs led by women, for women.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                size="lg" 
-                className="bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-3"
-                onClick={() => document.getElementById('quick-donate')?.scrollIntoView({ behavior: 'smooth' })}
-              >
-                <Heart className="h-4 w-4 mr-2" />
-                Donate Now
-                <ArrowRight className="h-4 w-4 ml-2" />
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="border-white text-white hover:bg-white hover:text-gray-900 font-semibold px-6 py-3"
-              >
-                <Play className="h-4 w-4 mr-2" />
-                Watch Our Story
-              </Button>
+        
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Quick Donate Widget */}
+            <div className="lg:order-2">
+              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20 shadow-2xl">
+                <h2 className="text-2xl font-bold text-white mb-6 text-center">Make a Difference</h2>
+                
+                <div className="space-y-6">
+                  {/* Donation Type Toggle */}
+                  <div className="flex bg-white/20 rounded-lg p-1 backdrop-blur-sm">
+                    <button
+                      onClick={() => setDonationType('oneoff')}
+                      className={`flex-1 px-4 py-2 rounded-md font-medium transition-all text-sm ${
+                        donationType === 'oneoff'
+                          ? 'bg-primary text-white shadow-md'
+                          : 'text-white/80 hover:text-white'
+                      }`}
+                    >
+                      One-off
+                    </button>
+                    <button
+                      onClick={() => setDonationType('monthly')}
+                      className={`flex-1 px-4 py-2 rounded-md font-medium transition-all text-sm ${
+                        donationType === 'monthly'
+                          ? 'bg-primary text-white shadow-md'
+                          : 'text-white/80 hover:text-white'
+                      }`}
+                    >
+                      Monthly
+                    </button>
+                  </div>
+
+                  {/* Amount Options */}
+                  <div className="grid grid-cols-2 gap-3">
+                    {donationAmounts.map((amount) => (
+                      <button
+                        key={amount}
+                        onClick={() => {
+                          setSelectedAmount(amount);
+                          setCustomAmount('');
+                        }}
+                        className={`px-4 py-3 rounded-lg border-2 transition-all duration-300 ${
+                          selectedAmount === amount
+                            ? 'border-primary bg-primary text-white shadow-lg'
+                            : 'border-white/30 bg-white/10 text-white hover:border-primary/50 backdrop-blur-sm'
+                        }`}
+                      >
+                        <div className="font-bold">£{amount}</div>
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Custom Amount Input */}
+                  <div className="space-y-2">
+                    <span className="text-white/80 text-sm">Or enter custom amount</span>
+                    <Input
+                      type="number"
+                      placeholder="Custom amount"
+                      value={customAmount}
+                      onChange={(e) => {
+                        setCustomAmount(e.target.value);
+                        setSelectedAmount(null);
+                      }}
+                      className="w-full h-12 bg-white/10 border-2 border-white/30 focus:border-primary text-white placeholder:text-white/60 backdrop-blur-sm"
+                    />
+                  </div>
+
+                  {/* Donate Now Button */}
+                  <button
+                    onClick={handleAddToDonationCart}
+                    disabled={(!selectedAmount && !customAmount)}
+                    className="w-full bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-lg font-medium transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Donate Now
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -490,88 +558,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Quick Donate Section - Linear Layout with Custom Amount */}
-      <section id="quick-donate" className="py-16 bg-primary/10 relative">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/15" />
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Quick Donate</h2>
-            <p className="text-lg text-gray-600">Make a difference with just a few clicks</p>
-          </div>
-          
-          <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl p-8 border border-primary/20">
-            <div className="flex flex-col lg:flex-row items-center justify-center gap-6">
-              {/* Donation Type Toggle */}
-              <div className="flex bg-gray-100 rounded-lg p-1">
-                <button
-                  onClick={() => setDonationType('oneoff')}
-                  className={`px-4 py-2 rounded-md font-medium transition-all text-sm ${
-                    donationType === 'oneoff'
-                      ? 'bg-primary text-white shadow-md'
-                      : 'text-gray-600 hover:text-primary'
-                  }`}
-                >
-                  One-off
-                </button>
-                <button
-                  onClick={() => setDonationType('monthly')}
-                  className={`px-4 py-2 rounded-md font-medium transition-all text-sm ${
-                    donationType === 'monthly'
-                      ? 'bg-primary text-white shadow-md'
-                      : 'text-gray-600 hover:text-primary'
-                  }`}
-                >
-                  Monthly
-                </button>
-              </div>
-
-              {/* Amount Options */}
-              <div className="flex gap-3">
-                {donationAmounts.map((amount) => (
-                  <button
-                    key={amount}
-                    onClick={() => {
-                      setSelectedAmount(amount);
-                      setCustomAmount('');
-                    }}
-                    className={`px-4 py-3 rounded-lg border-2 transition-all duration-300 min-w-[80px] ${
-                      selectedAmount === amount
-                        ? 'border-primary bg-primary text-white shadow-lg'
-                        : 'border-gray-200 bg-white text-gray-700 hover:border-primary/50'
-                    }`}
-                  >
-                    <div className="font-bold">£{amount}</div>
-                  </button>
-                ))}
-              </div>
-
-              {/* Custom Amount Input */}
-              <div className="flex items-center gap-2">
-                <span className="text-gray-600 text-sm">or</span>
-                <Input
-                  type="number"
-                  placeholder="Custom amount"
-                  value={customAmount}
-                  onChange={(e) => {
-                    setCustomAmount(e.target.value);
-                    setSelectedAmount(null);
-                  }}
-                  className="w-32 h-12 border-2 border-gray-200 focus:border-primary"
-                />
-              </div>
-
-              {/* Donate Now Button */}
-              <button
-                onClick={handleAddToDonationCart}
-                disabled={(!selectedAmount && !customAmount)}
-                className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-medium transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Donate Now
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Active Campaigns Carousel */}
       <section id="campaigns" className="py-24 bg-gradient-to-br from-gray-50 to-primary/5">
@@ -615,13 +601,13 @@ const Index = () => {
                             <p className="text-gray-600 mb-8 text-lg leading-relaxed">{campaign.description}</p>
                             
                             <div className="text-center">
-                              <Button 
-                                className="bg-red-600 hover:bg-red-700 text-white font-semibold px-8 py-3"
-                                onClick={() => addCampaignToCart(campaign)}
-                              >
-                                <Heart className="h-4 w-4 mr-2" />
-                                Donate Now
-                              </Button>
+                            <Button 
+                              className="bg-primary hover:bg-primary/90 text-white font-semibold px-8 py-3"
+                              onClick={() => addCampaignToCart(campaign)}
+                            >
+                              <Heart className="h-4 w-4 mr-2" />
+                              Donate Now
+                            </Button>
                             </div>
                           </CardContent>
                         </Card>
@@ -844,7 +830,7 @@ const Index = () => {
               <p className="text-gray-600 mb-8 text-lg leading-relaxed">
                 Make a direct impact with financial support for our programs
               </p>
-              <Button className="bg-red-600 hover:bg-red-700 text-white font-semibold px-6">
+              <Button className="bg-primary hover:bg-primary/90 text-white font-semibold px-6">
                 <Heart className="h-4 w-4 mr-2" />
                 Donate Now
               </Button>
