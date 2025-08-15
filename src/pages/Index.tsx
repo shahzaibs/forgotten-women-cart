@@ -4,7 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { useToast } from "@/hooks/use-toast";
+import bannerEducation from "@/assets/banner-education.jpg";
+import bannerRelief from "@/assets/banner-relief.jpg";
+import bannerHealthcare from "@/assets/banner-healthcare.jpg";
+import bannerEmpowerment from "@/assets/banner-empowerment.jpg";
 import { 
   Heart, 
   ShoppingCart, 
@@ -285,35 +290,133 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Hero Banner with Text Overlay */}
+      {/* Hero Banner Carousel */}
       <section className="relative h-[600px] bg-gray-900 overflow-hidden">
-        <div className="absolute inset-0">
-          <img 
-            src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=1200&h=600&fit=crop" 
-            alt="Women empowerment community gathering"
-            className="w-full h-full object-cover opacity-70"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30" />
-        </div>
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center">
-          <div className="text-white max-w-2xl">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              Safe Aid for Women <br />by Women
-            </h1>
-            <p className="text-xl md:text-2xl mb-8 opacity-90">
-              Supporting forgotten women worldwide through emergency relief, education, 
-              and empowerment programs led by women, for women.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="bg-[#93B252] hover:bg-[#7a9642] text-white font-semibold">
-                Donate Now
-              </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-gray-900 font-semibold">
-                Learn More
-              </Button>
-            </div>
-          </div>
-        </div>
+        <Carousel className="h-full">
+          <CarouselContent className="h-full">
+            <CarouselItem className="relative h-full">
+              <div className="absolute inset-0">
+                <img 
+                  src={bannerEducation} 
+                  alt="Education for girls banner"
+                  className="w-full h-full object-cover opacity-70"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30" />
+              </div>
+              <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center">
+                <div className="text-white max-w-2xl">
+                  <h1 className="text-4xl md:text-6xl font-bold mb-6">
+                    Education for <br />Every Girl
+                  </h1>
+                  <p className="text-xl md:text-2xl mb-8 opacity-90">
+                    Breaking barriers to education and empowering girls worldwide 
+                    through access to quality learning opportunities.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <Button size="lg" className="bg-[#93B252] hover:bg-[#7a9642] text-white font-semibold">
+                      Support Education
+                    </Button>
+                    <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-gray-900 font-semibold">
+                      Learn More
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </CarouselItem>
+            
+            <CarouselItem className="relative h-full">
+              <div className="absolute inset-0">
+                <img 
+                  src={bannerRelief} 
+                  alt="Emergency relief banner"
+                  className="w-full h-full object-cover opacity-70"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30" />
+              </div>
+              <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center">
+                <div className="text-white max-w-2xl">
+                  <h1 className="text-4xl md:text-6xl font-bold mb-6">
+                    Emergency Relief <br />When It Matters
+                  </h1>
+                  <p className="text-xl md:text-2xl mb-8 opacity-90">
+                    Providing immediate aid and support to women and children 
+                    in crisis situations around the world.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <Button size="lg" className="bg-[#93B252] hover:bg-[#7a9642] text-white font-semibold">
+                      Donate for Relief
+                    </Button>
+                    <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-gray-900 font-semibold">
+                      Learn More
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </CarouselItem>
+            
+            <CarouselItem className="relative h-full">
+              <div className="absolute inset-0">
+                <img 
+                  src={bannerHealthcare} 
+                  alt="Healthcare access banner"
+                  className="w-full h-full object-cover opacity-70"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30" />
+              </div>
+              <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center">
+                <div className="text-white max-w-2xl">
+                  <h1 className="text-4xl md:text-6xl font-bold mb-6">
+                    Healthcare Access <br />for All Women
+                  </h1>
+                  <p className="text-xl md:text-2xl mb-8 opacity-90">
+                    Ensuring quality healthcare and medical support reaches 
+                    women in underserved communities globally.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <Button size="lg" className="bg-[#93B252] hover:bg-[#7a9642] text-white font-semibold">
+                      Support Healthcare
+                    </Button>
+                    <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-gray-900 font-semibold">
+                      Learn More
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </CarouselItem>
+            
+            <CarouselItem className="relative h-full">
+              <div className="absolute inset-0">
+                <img 
+                  src={bannerEmpowerment} 
+                  alt="Economic empowerment banner"
+                  className="w-full h-full object-cover opacity-70"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30" />
+              </div>
+              <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center">
+                <div className="text-white max-w-2xl">
+                  <h1 className="text-4xl md:text-6xl font-bold mb-6">
+                    Economic <br />Empowerment
+                  </h1>
+                  <p className="text-xl md:text-2xl mb-8 opacity-90">
+                    Creating sustainable opportunities for women to achieve 
+                    financial independence and entrepreneurial success.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <Button size="lg" className="bg-[#93B252] hover:bg-[#7a9642] text-white font-semibold">
+                      Support Empowerment
+                    </Button>
+                    <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-gray-900 font-semibold">
+                      Learn More
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </CarouselItem>
+          </CarouselContent>
+          <CarouselPrevious className="left-4 bg-white/10 border-white/20 text-white hover:bg-white/20" />
+          <CarouselNext className="right-4 bg-white/10 border-white/20 text-white hover:bg-white/20" />
+        </Carousel>
       </section>
 
       {/* Quick Donate Section */}
