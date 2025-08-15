@@ -59,6 +59,13 @@ const Index = () => {
     'Safe Housing Initiative'
   ];
 
+  const upsellItems = [
+    { id: 'emergency-kit', name: 'Emergency Supply Kit', amount: 15, appeal: 'Emergency Relief Fund', description: 'Provides basic supplies for one family' },
+    { id: 'school-supplies', name: 'School Supplies Pack', amount: 8, appeal: 'Education for Girls', description: 'Books and materials for one student' },
+    { id: 'medical-kit', name: 'Basic Medical Kit', amount: 12, appeal: 'Healthcare Access', description: 'Essential medical supplies' },
+    { id: 'nutrition-pack', name: 'Nutrition Support', amount: 20, appeal: 'Emergency Relief Fund', description: 'One month of nutritional support' }
+  ];
+
   const campaigns = [
     {
       title: 'Emergency Relief for Afghan Women',
@@ -162,6 +169,35 @@ const Index = () => {
     return cartItems.reduce((total, item) => total + item.quantity, 0);
   };
 
+  const addUpsellToCart = (upsellItem: typeof upsellItems[0]) => {
+    // Check if item already exists in cart
+    const existingItemIndex = cartItems.findIndex(
+      item => item.appeal === upsellItem.appeal && item.amount === upsellItem.amount && item.frequency === 'one-off'
+    );
+
+    if (existingItemIndex !== -1) {
+      // If item exists, increase quantity
+      const updatedItems = [...cartItems];
+      updatedItems[existingItemIndex].quantity += 1;
+      setCartItems(updatedItems);
+    } else {
+      // If item doesn't exist, add new item
+      const newItem: DonationItem = {
+        id: Date.now().toString(),
+        appeal: upsellItem.appeal,
+        amount: upsellItem.amount,
+        quantity: 1,
+        frequency: 'one-off'
+      };
+      setCartItems([...cartItems, newItem]);
+    }
+
+    toast({
+      title: "Added to basket! 💚",
+      description: `${upsellItem.name} - £${upsellItem.amount}`,
+    });
+  };
+
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
@@ -260,6 +296,33 @@ const Index = () => {
                       </Button>
                     </div>
                   ))}
+                </div>
+              )}
+              
+              {/* Upsell Items Section */}
+              {cartItems.length > 0 && (
+                <div className="border-t pt-6 mt-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Add More Impact</h3>
+                  <div className="space-y-3">
+                    {upsellItems.map((item) => (
+                      <div key={item.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div className="flex-1">
+                          <p className="font-medium text-gray-900 text-sm">{item.name}</p>
+                          <p className="text-xs text-gray-600">{item.description}</p>
+                          <p className="text-[#93B252] font-bold text-sm">£{item.amount}</p>
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="border-[#93B252] text-[#93B252] hover:bg-[#93B252] hover:text-white text-xs px-3 h-8"
+                          onClick={() => addUpsellToCart(item)}
+                        >
+                          <Plus className="h-3 w-3 mr-1" />
+                          Add
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
