@@ -38,6 +38,7 @@ interface DonationItem {
   appeal: string;
   amount: number;
   quantity: number;
+  frequency: string;
 }
 
 const Index = () => {
@@ -108,7 +109,7 @@ const Index = () => {
 
     // Check if item already exists in cart
     const existingItemIndex = cartItems.findIndex(
-      item => item.appeal === selectedAppeal && item.amount === finalAmount
+      item => item.appeal === selectedAppeal && item.amount === finalAmount && item.frequency === donationType
     );
 
     if (existingItemIndex !== -1) {
@@ -122,7 +123,8 @@ const Index = () => {
         id: Date.now().toString(),
         appeal: selectedAppeal,
         amount: finalAmount,
-        quantity: 1
+        quantity: 1,
+        frequency: donationType
       };
       setCartItems([...cartItems, newItem]);
     }
@@ -222,6 +224,9 @@ const Index = () => {
                       <div className="flex-1">
                         <p className="font-medium text-gray-900">{item.appeal}</p>
                         <p className="text-[#93B252] font-bold">£{item.amount} each</p>
+                        <p className="text-sm text-gray-600 capitalize">
+                          {item.frequency === 'one-off' ? 'One-off donation' : 'Monthly donation'}
+                        </p>
                         <div className="flex items-center gap-2 mt-2">
                           <Button
                             variant="outline"
@@ -521,7 +526,7 @@ const Index = () => {
                     disabled={!selectedAppeal || (!selectedAmount && !customAmount)}
                   >
                     <Plus className="h-5 w-5 mr-2" />
-                    Add to Basket
+                    Donate Now
                   </Button>
                 </div>
               </div>
