@@ -46,6 +46,7 @@ const Index = () => {
   const [selectedAppeal, setSelectedAppeal] = useState('');
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const [customAmount, setCustomAmount] = useState('');
+  const [donationType, setDonationType] = useState('one-off');
   const { toast } = useToast();
 
   const presetAmounts = [10, 25, 50, 100];
@@ -431,6 +432,35 @@ const Index = () => {
           <Card className="bg-white text-gray-900 border shadow-lg">
             <CardContent className="p-8">
               <div className="space-y-6">
+                {/* One-off vs Monthly Selection */}
+                <div>
+                  <label className="block text-sm font-medium mb-3 text-gray-700">Donation Type</label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <Button
+                      variant={donationType === 'one-off' ? "default" : "outline"}
+                      className={`h-12 font-semibold ${
+                        donationType === 'one-off'
+                          ? "bg-[#93B252] text-white hover:bg-[#7a9642]"
+                          : "border-[#93B252] text-[#93B252] hover:bg-[#93B252] hover:text-white"
+                      }`}
+                      onClick={() => setDonationType('one-off')}
+                    >
+                      One-off
+                    </Button>
+                    <Button
+                      variant={donationType === 'monthly' ? "default" : "outline"}
+                      className={`h-12 font-semibold ${
+                        donationType === 'monthly'
+                          ? "bg-[#93B252] text-white hover:bg-[#7a9642]"
+                          : "border-[#93B252] text-[#93B252] hover:bg-[#93B252] hover:text-white"
+                      }`}
+                      onClick={() => setDonationType('monthly')}
+                    >
+                      Monthly
+                    </Button>
+                  </div>
+                </div>
+
                 {/* Appeal Selection */}
                 <div>
                   <label className="block text-sm font-medium mb-2 text-gray-700">Select Appeal</label>
